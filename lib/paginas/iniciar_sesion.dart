@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:vision_one/provider/seccion_provider.dart';
 
 class IniciarSesion extends StatelessWidget {
+
+  final seccionProvider = new SeccionProvider();
 
   @override
   Widget build(BuildContext context) {

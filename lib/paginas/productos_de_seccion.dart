@@ -1,4 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+
+import 'package:vision_one/bloc/producto_bloc.dart';
+import 'package:vision_one/modelo/producto_model.dart';
+import 'package:vision_one/modelo/seccion_model.dart';
 
 class ProductosPage extends StatefulWidget {
   @override
@@ -6,134 +12,99 @@ class ProductosPage extends StatefulWidget {
 }
 
 class _ProductosPageState extends State<ProductosPage> {
+
+  ProductoBloc productoBloc = new ProductoBloc();
+  ProductoModel productoModel = new ProductoModel();
+  SeccionModel seccionModel = new SeccionModel();
+
+
   @override
   Widget build(BuildContext context) {
 
     final tamano = MediaQuery.of(context).size;
+    final SeccionModel seccion = ModalRoute.of(context).settings.arguments;
+    productoBloc.cargarProducto(seccion.id);
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          _appbar(tamano),
-          SliverList(delegate: SliverChildListDelegate(
-            [_body(tamano)]
-          ))
-        ],
+      appBar: AppBar(
+        title: Text('${seccion.nombre}'),
+      ),
+      body: _body(tamano, seccion),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.pushNamed(context, 'crearProd',  arguments: seccion),
+        child: Icon(Icons.add),
       ),
     );
   }
 
-  Widget _appbar(Size tamano) {
+  Widget _body(Size tamano, SeccionModel seccion) {
 
-    return SliverAppBar(
-      title: Row(
-        children: [
-          Expanded(child: SizedBox()),
-          Text('Baterias'),
-          Expanded(child: SizedBox()),
-          TextButton(
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.black12,
-              elevation: 0.9
-            ),
-            onPressed:() => Navigator.pushNamed(context, 'crear_prod'),
-            child: Text('Añadir Producto', style: TextStyle(color: Colors.white, fontSize: 13.0))
-          )
-        ],
-      ),
+    return StreamBuilder(
+      stream: productoBloc.productoStream,
+      builder: (BuildContext context, AsyncSnapshot<List<ProductoModel>> snapshot) {
+
+        if(snapshot.hasData) {
+          
+          final producto = snapshot.data;
+
+          return RefreshIndicator(
+            onRefresh: _refrescar,
+            child: ListView.builder(
+              itemCount: producto.length,
+              itemBuilder: (BuildContext context, int i) 
+              => _producto(context ,producto[i], seccion),
+            )
+          );
+          
+
+        } else {
+          return Center(child: CircularProgressIndicator());
+        } 
+
+      }
     );
-
 
   }
 
-  Widget _body(Size tamano) {
+  Widget _producto(BuildContext context, ProductoModel producto, SeccionModel seccion) {
 
-    return SingleChildScrollView(
+      return Card(
       child: Column(
         children: [
-          SizedBox(height: tamano.height * 0.01),
-          Container(
-            width: tamano.width * 1.0,
-            height: tamano.height * 0.38,
-            child: _producto(tamano),
-          )
+          ListTile(
+            onTap: () => Navigator.pushNamed(context, 'prodDetalle', arguments: [producto, seccion]),
+            title: Center(child: Text('${producto.nombre}')),
+            subtitle: Column(
+              children: [
+              SizedBox(height: 15.0),
+              Container(
+                width: 200.0,
+                height: 200.0,
+                color: Colors.black26,
+                child: Center(child: Icon(Icons.image)),
+              ),
+              SizedBox(height: 15.0),
+              Text('2AN1.Arrendadora: ${producto.stockA}'),
+              SizedBox(height: 5.0),
+              Text('2AN2.Servicio Liviano: ${producto.stockB}'),
+              SizedBox(height: 5.0),
+              Text('2AN3.Servicio Pesado: ${producto.stockC}'),
+              ]
+            )
+          ),
         ],
       ),
     );
 
   }
 
-  Widget _producto(Size tamano) {
-
-    final card = Container(
-      child: Column(
-        children: [
-          SizedBox(height: 8.0),
-          Container(
-            width: tamano.width * 0.5,
-            height: 100.0,
-            //margin: EdgeInsets.only(top: 20.0, left: 15.0),
-            child: Image(
-              image: AssetImage('imagenes/producto.jpg'),
-            ),
-          ),
-          SizedBox(height: tamano.height * 0.02),
-          Center(child: Text('Nombre del producto')),
-          SizedBox(height: tamano.height * 0.02),
-          Center(child: _stock()),
-        ],
-      ),
-    );
-
-    return Container(
-      margin: EdgeInsets.only(bottom: 15.0, left: 10.0, right: 10.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(30.0),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: Colors.black38,
-            offset: Offset(0.0, 0.0),
-            blurRadius: 0.0,
-            spreadRadius: 2.0,
-          )
-        ]
-      ),
-      child: ClipRRect(
-        child: card,
-        borderRadius: BorderRadius.circular(30.0),
-      )
-    );
-
+  Future _refrescar() async {
+  
+    Duration carga = new Duration(seconds: 2);
+    new Timer(carga, () {
+      build(context);
+    });
+    return Future.delayed(carga);
   }
 
-  Widget _stock() {
-
-    return Container(
-      margin: EdgeInsets.only(left: 100.0),
-      child: Table(
-        children: [
-          TableRow(
-            children: [
-              Text('Sucursal Norte'),
-              Text('5 prod'),
-            ]
-          ),
-          TableRow(
-            children: [
-              Text('Sucursal Centro'),
-              Text('3 prod'),
-            ]
-          ),
-          TableRow(
-            children: [
-              Text('Sucursal Sur'),
-              Text('7 prod'),
-            ]
-          )
-        ],
-      ),
-    );
-
-  }
 }

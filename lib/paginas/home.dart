@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:vision_one/modelo/mysql.dart';
+
+import 'package:vision_one/bloc/seccion_bloc.dart';
+import 'package:vision_one/modelo/seccion_model.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -9,81 +13,82 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   
-  var db = new Mysql();
+
+  SeccionBloc seccionBloc = new SeccionBloc();
+  SeccionModel seccionModel = new SeccionModel();
 
   @override
   Widget build(BuildContext context) {
 
     final tamano = MediaQuery.of(context).size;  
-    
+    seccionBloc.cargarSeccion();
+
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          _appbar(tamano),
-          SliverList(delegate: SliverChildListDelegate(
-              [ _body(tamano) ]
-            )
-          ),
-        ],
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text('Catalogo de secciones'),
       ),
+      body: _body(tamano),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: null 
-        //() => Navigator.pushNamed(context, 'admin_seccion'),
+        onPressed: () => Navigator.pushNamed(context, 'admin_seccion'),
       ),
     );
-  }
-
-  Widget _appbar(tamano) {
-
-    return SliverAppBar(
-      title: Row(
-        children: [
-          Expanded(child: SizedBox()),
-          Center(child: Text('Catalogo de productos')),
-          Expanded(child: SizedBox()),
-          TextButton(
-            //icon: Icon(Icons.ad),
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.black12,
-              elevation: 0.9
-            ),            
-            child: Text('administrar usuarios', style: TextStyle(color: Colors.white, fontSize: 13.0)),
-            onPressed:() => Navigator.pushNamed(context, 'admin_user')
-          )
-        ],
-      ),
-    );
-              
   }
 
   Widget _body(Size tamano) {
 
-    return SingleChildScrollView(
+    return StreamBuilder(
+      stream: seccionBloc.seccionStream,
+      builder: (BuildContext context, AsyncSnapshot<List<SeccionModel>> snapshot) {
+        if(snapshot.hasData) {
+
+          final seccion = snapshot.data;
+
+          return RefreshIndicator(
+            onRefresh: _refrescar,
+            child: ListView.builder(
+              itemCount: seccion.length,
+              itemBuilder: (BuildContext context, int i) 
+              => _seccion(context ,seccion[i]),
+            )
+          );
+          
+        } else {
+          return Center(child: CircularProgressIndicator());
+        } 
+
+      }
+    );
+
+
+  }
+
+  Widget _seccion(BuildContext context, SeccionModel seccion) {
+
+    return Card(
       child: Column(
         children: [
-          Container(
-            width: tamano.width * 1.0,
-            height: tamano.height * 0.5,
-            child: _secciones(),
+          ListTile(
+              onTap: () =>Navigator.pushNamed(context, 'productos', arguments: seccion),
+            title: Text('${seccion.nombre}'),
           ),
-          //SizedBox(height: 80.0),
-        ]
+        ],
       ),
     );
-
+          
   }
 
-  Widget _secciones() {
-
-    return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, 'productos'),
-      child: ListTile(
-        title: Text('Baterías'),
-      ),
-    );
-
+  Future _refrescar() async {
+  
+    Duration carga = new Duration(seconds: 2);
+    new Timer(carga, () {
+      build(context);
+    });
+    return Future.delayed(carga);
   }
+
+
               
 
 }

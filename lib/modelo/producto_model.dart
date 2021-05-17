@@ -6,39 +6,43 @@ String productoModelToJson(ProductoModel data) => json.encode(data.toJson());
 
 class ProductoModel {
 
-  String  id;
+  int     id;
   String  nombre;
   String  descripcion;
   int     stockA;
   int     stockB;
   int     stockC;
+  int     idseccion;
 
 
   ProductoModel ({
-    this.id      = '',
+    this.id,
     this.nombre  = '',
     this.descripcion,
     this.stockA,
     this.stockB,
-    this.stockC
+    this.stockC,
+    this.idseccion
   });
 
     factory ProductoModel.fromJson(Map<String, dynamic> json) => new ProductoModel( 
-      id          : json["id"],
-      nombre      : json["nombre"],
-      descripcion : json["descripcion"],
-      stockA      : json["stockA"],
-      stockB      : json["stockB"],
-      stockC      : json["stockC"]
+      id          : json["Id"],
+      nombre      : json["Nombre"],
+      descripcion : json["Descripcion"],
+      stockA      : json["StockA"],
+      stockB      : json["StockB"],
+      stockC      : json["StockC"],
+      idseccion   : json["Idseccion"]
     );
 
     Map<String, dynamic> toJson() => {
-      "id"          : id,
-      "nombre"      : nombre,
-      "descripcion" : descripcion,
-      "stockA"      : stockA,
-      "stockB"      : stockB,
-      "stockC"      : stockC
+      "Id"          : id,
+      "Nombre"      : nombre,
+      "Descripcion" : descripcion,
+      "StockA"      : stockA,
+      "StockB"      : stockB,
+      "StockC"      : stockC,
+      "Idseccion"   : idseccion,
     };
 
 }

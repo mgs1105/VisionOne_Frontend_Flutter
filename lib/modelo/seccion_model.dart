@@ -6,27 +6,22 @@ String seccionModelToJson(SeccionModel data) => json.encode(data.toJson());
 
 class SeccionModel {
 
-  String  id;
+  int     id;
   String  nombre;
-  int     cantidad;
-
 
   SeccionModel ({
-    this.id      = '',
+    this.id,
     this.nombre  = '',
-    this.cantidad,
   });
 
     factory SeccionModel.fromJson(Map<String, dynamic> json) => new SeccionModel( 
-      id       : json["id"],
-      nombre   : json["nombre"],
-      cantidad : json["cantidad"],
+      id       : json["Id"],
+      nombre   : json["Nombre"],
     );
 
     Map<String, dynamic> toJson() => {
-      "id"       : id,
-      "nombre"   : nombre,
-      "cantidad" : cantidad,
+      "Id"       : id,
+      "Nombre"   : nombre,
     };
 
 }
