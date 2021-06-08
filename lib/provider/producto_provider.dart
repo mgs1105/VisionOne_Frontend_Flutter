@@ -18,7 +18,7 @@ class ProductoProvider{
 
     final List<ProductoModel> lista = [];
 
-    if(decodeData == null) return [];
+    if(decodeData == null) return null;
 
     decodeData.forEach((value) {
       

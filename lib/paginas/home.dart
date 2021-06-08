@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 
 import 'package:vision_one/bloc/seccion_bloc.dart';
 import 'package:vision_one/modelo/seccion_model.dart';
+import 'package:vision_one/modelo/usuario_model.dart';
+
+import 'package:vision_one/utils/utils.dart' as utils;
 
 class HomePage extends StatefulWidget {
 
@@ -13,30 +16,44 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   
-
   SeccionBloc seccionBloc = new SeccionBloc();
   SeccionModel seccionModel = new SeccionModel();
-
+  
   @override
   Widget build(BuildContext context) {
 
     final tamano = MediaQuery.of(context).size;  
+    final UsuarioModel usuario = ModalRoute.of(context).settings.arguments;
+
     seccionBloc.cargarSeccion();
+    setState(() {
+    });
 
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text('Catalogo de secciones'),
+        actions: utils.boton(usuario.rol, context), 
       ),
-      body: _body(tamano),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => Navigator.pushNamed(context, 'admin_seccion'),
-      ),
+      body: _body(tamano, usuario.rol),
+      floatingActionButton: _agregarSecc(usuario.rol)
     );
   }
+  
+  Widget _agregarSecc(String rol) {
 
-  Widget _body(Size tamano) {
+    if(rol == 'ADMIN' || rol == 'BODEGUERO') {
+      return FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => Navigator.pushNamed(context, 'admin_seccion'),
+      );
+    } else {
+      return null;
+    }
+
+  }
+
+  Widget _body(Size tamano, String rol) {
 
     return StreamBuilder(
       stream: seccionBloc.seccionStream,
@@ -50,7 +67,7 @@ class _HomePageState extends State<HomePage> {
             child: ListView.builder(
               itemCount: seccion.length,
               itemBuilder: (BuildContext context, int i) 
-              => _seccion(context ,seccion[i]),
+              => _seccion(context ,seccion[i], rol),
             )
           );
           
@@ -64,13 +81,13 @@ class _HomePageState extends State<HomePage> {
 
   }
 
-  Widget _seccion(BuildContext context, SeccionModel seccion) {
+  Widget _seccion(BuildContext context, SeccionModel seccion, String rol) {
 
     return Card(
       child: Column(
         children: [
           ListTile(
-              onTap: () =>Navigator.pushNamed(context, 'productos', arguments: seccion),
+              onTap: () =>Navigator.pushNamed(context, 'productos', arguments: [seccion, rol]),
             title: Text('${seccion.nombre}'),
           ),
         ],
@@ -87,8 +104,6 @@ class _HomePageState extends State<HomePage> {
     });
     return Future.delayed(carga);
   }
-
-
-              
+           
 
 }

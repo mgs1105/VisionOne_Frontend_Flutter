@@ -35,6 +35,7 @@ dev_dependencies:
   mysql1: ^0.19.0
   http:
   rxdart:
+  dart_rut_validator:
   
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

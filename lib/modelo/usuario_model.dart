@@ -8,28 +8,24 @@ class UsuarioModel {
 
   String  rut;
   String  rol;
-  //String  nombre;
   String  password;
 
   UsuarioModel ({
-    this.rut      = '',
-    this.rol      = '',
-    //this.nombre   = '',
-    this.password = '',
+    this.rut,
+    this.rol,
+    this.password,
   });
 
     factory UsuarioModel.fromJson(Map<String, dynamic> json) => new UsuarioModel( 
-      rut      : json["rut"],
-      rol      : json["rol"],
-      //nombre   : json["nombre"],
-      password : json["password"],
+      rut      : json["Rut"],
+      rol      : json["Rol"],
+      password : json["Password"],
     );
 
     Map<String, dynamic> toJson() => {
-      "rut"      : rut,
-      "rol"      : rol,
-      //"nombre"   : nombre,
-      "password" : password,
+      "Rut"      : rut,
+      "Rol"      : rol,
+      "Password" : password,
     };
 
 }

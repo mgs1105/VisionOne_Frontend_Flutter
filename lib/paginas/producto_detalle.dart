@@ -4,6 +4,8 @@ import 'package:vision_one/modelo/producto_model.dart';
 import 'package:vision_one/modelo/seccion_model.dart';
 import 'package:vision_one/provider/producto_provider.dart';
 
+import 'package:vision_one/utils/utils.dart' as utils;
+
 class ProdDetallePage extends StatefulWidget {
   @override
   _ProdDetallePageState createState() => _ProdDetallePageState();
@@ -27,12 +29,13 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue,
         title: Text('Detalle del producto'),
         centerTitle: true,
         actions: [
           IconButton(
             icon: Icon(Icons.delete_forever), 
-            color: Colors.black87,
+            color: Colors.white,
             iconSize: 30.0,
             onPressed: () => _eliminar(producto, seccion)
           )
@@ -47,7 +50,7 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
             
   } 
 
-    _eliminar(ProductoModel producto, SeccionModel seccion) {
+  void _eliminar(ProductoModel producto, SeccionModel seccion) {
 
     final color = TextStyle(color: Colors.white); 
     SeccionModel seccion = new SeccionModel();
@@ -57,46 +60,67 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
     showDialog(
       context: context,
       barrierDismissible: false, 
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Esta seguro que desea eliminar el producto?'),
-          actions: [
-            TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.blueAccent
-              ),
-              child: Text('No', style: color),
-              onPressed: (){
-                Navigator.of(context).pop();
-              }, 
-            ),
-            Expanded(child: SizedBox(width: 10.0)),
-            TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.red
-              ), 
-              child: Text('Eliminar', style: color),
-              onPressed: () async {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-
-                productoProvider.eliminarProducto(producto);
-                productoBloc.cargarProducto(seccion.id);
-                final snack = SnackBar(
-                content: Text('Producto eliminado con exito'),
-                duration: Duration(seconds: 2),
-                );
-                ScaffoldMessenger.of(context).showSnackBar(snack);                     
-              
-              }, 
-            )
-          ],
-         );
-      }
+      builder: (context) => _alertas(producto, seccion, color)
     );
 
   }
-      
+
+  Widget _alertas(ProductoModel producto, SeccionModel seccion, TextStyle color) {
+
+    if(producto.stockA == 0 && producto.stockB == 0 && producto.stockC == 0) {
+
+    final color = TextStyle(color: Colors.white); 
+
+      return AlertDialog(
+        title: Text('Esta seguro que desea eliminar el producto?'),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.blueAccent
+            ),
+            child: Text('No', style: color),
+            onPressed: (){
+              Navigator.of(context).pop();
+            }, 
+          ),
+          Expanded(child: SizedBox(width: 10.0)),
+          TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.red
+            ), 
+            child: Text('Eliminar', style: color),
+            onPressed: () async {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+
+              productoProvider.eliminarProducto(producto);
+              productoBloc.cargarProducto(seccion.id);
+              final snack = utils.snackBar('Producto eliminado con exito');
+              ScaffoldMessenger.of(context).showSnackBar(snack);                    
+            }, 
+          )
+        ],
+      );
+              
+    } else {
+        
+      return AlertDialog(
+        title: Text('No puede eliminar este producto porque aun cuenta con stock disponible en sucursales'),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.blueAccent
+            ),
+            child: Text('volver', style: color),
+            onPressed: (){
+              Navigator.of(context).pop();
+            }, 
+          ),
+        ],
+      );
+    }
+  }
+
   Widget _body(ProductoModel producto, Size tamano) {
 
     return  Column(
@@ -214,8 +238,12 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
 
   Widget _boton(ProductoModel producto) {
 
-    return TextButton(
-      child: Text('Guardar cambios'),
+    return TextButton(    
+      style: TextButton.styleFrom(
+        backgroundColor: Colors.blue,
+        padding: EdgeInsets.symmetric(horizontal: 20.0)
+      ),
+      child: Text('Guardar cambios', style: TextStyle(color: Colors.white)),
       onPressed: () {
 
         if(!keyformulario.currentState.validate()) return;
@@ -223,18 +251,10 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
         keyformulario.currentState.save();
         productoProvider.modificarProducto(producto);
 
-        final snack = SnackBar(
-          content: Text('Producto modificado con exito'),
-          duration: Duration(seconds: 2),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snack);        
+            final snack = utils.snackBar('Producto modificado con exito');
+            ScaffoldMessenger.of(context).showSnackBar(snack);       
       }, 
     );
   }
-
-
-
-
-
 
 }

@@ -40,5 +40,14 @@ class SeccionProvider {
     return true;
   }
 
+  void eliminarSeccion(SeccionModel seccion) async {
+
+    final id = seccion.id;
+
+    final url = '$_dominio/seccion/$id';
+    final resp = await http.delete(Uri.parse(url));
+    
+  }
+
 }
 
