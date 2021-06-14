@@ -128,12 +128,7 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
         SizedBox(height: tamano.height * 0.03),
         Text('${producto.nombre}', style: TextStyle(fontSize: 18.0)),
         SizedBox(height: tamano.height * 0.03),
-        Container(
-          width: 200.0,
-          height: 200.0,
-          color: Colors.black26,
-          child: Center(child: Icon(Icons.image)),
-        ),
+        img(producto),
         SizedBox(height: tamano.height * 0.03),
         Text('Stock en Sucursales', style: TextStyle(fontSize: 18.0)),
         SizedBox(height: tamano.height * 0.03),
@@ -142,6 +137,29 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
         _boton(producto),
       ],
     );
+
+  }
+
+  Widget img(ProductoModel producto) {
+    
+  if(producto.fotoURL == null) {
+    return Container(
+      width: 200.0,
+      height: 200.0,
+      color: Colors.black26,
+      child: Center(child: Icon(Icons.image)),
+    );
+  } else {
+    return Container(
+      width: 350.0,
+      height: 250.0,
+      child: FadeInImage(        
+        placeholder: AssetImage('imagenes/jar-loading.gif'), 
+        image: NetworkImage(producto.fotoURL),
+        fit: BoxFit.cover,
+      ),
+    );
+  }  
 
   }
 

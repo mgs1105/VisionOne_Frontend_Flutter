@@ -36,6 +36,8 @@ dev_dependencies:
   http:
   rxdart:
   dart_rut_validator:
+  mime_type:
+  image_picker:
   
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

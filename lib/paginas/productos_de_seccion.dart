@@ -45,6 +45,7 @@ class _ProductosPageState extends State<ProductosPage> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text('${seccion.nombre}'),
         actions: [botonEliminar(condicion, seccion)]
       ),
@@ -117,12 +118,7 @@ class _ProductosPageState extends State<ProductosPage> {
             subtitle: Column(
               children: [
               SizedBox(height: 15.0),
-              Container(
-                width: 200.0,
-                height: 200.0,
-                color: Colors.black26,
-                child: Center(child: Icon(Icons.image)),
-              ),
+              img(producto),
               SizedBox(height: 15.0),
               Text('2AN1.Arrendadora: ${producto.stockA}', style: estilo),
               SizedBox(height: 5.0),
@@ -135,6 +131,29 @@ class _ProductosPageState extends State<ProductosPage> {
         ],
       ),
     );
+
+  }
+
+  Widget img(ProductoModel producto) {
+    
+  if(producto.fotoURL == null) {
+    return Container(
+      width: 200.0,
+      height: 200.0,
+      color: Colors.black26,
+      child: Center(child: Icon(Icons.image)),
+    );
+  } else {
+    return Container(
+      width: 350.0,
+      height: 250.0,
+      child: FadeInImage(        
+        placeholder: AssetImage('imagenes/jar-loading.gif'), 
+        image: NetworkImage(producto.fotoURL),
+        fit: BoxFit.cover,
+      ),
+    );
+  }  
 
   }
 

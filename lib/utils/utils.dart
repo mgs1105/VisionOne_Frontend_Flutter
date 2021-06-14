@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:vision_one/paginas/productos_de_seccion.dart' as producto;
+import 'package:vision_one/search/search_delegate.dart';
 
 List<DropdownMenuItem<String>> opcionesRol(List roles) {
 
@@ -25,22 +26,20 @@ SnackBar snackBar (String mensaje) {
 
 }
 
-List<Widget> boton(String rol, BuildContext context) {
+Widget boton(String rol, BuildContext context) {
 
   if(rol == 'ADMIN') {
-  return [
-    IconButton(
-      enableFeedback: false,
-      icon: Icon(Icons.group_add_outlined), 
-      color: Colors.white,
-      iconSize: 35.0,
-      onPressed: () {
-        Navigator.pushNamed(context, 'lista_users');
-      }
-    )
-  ];
+  return IconButton(
+    enableFeedback: false,
+    icon: Icon(Icons.group_add_outlined), 
+    color: Colors.white,
+    iconSize: 35.0,
+    onPressed: () {
+      Navigator.pushNamed(context, 'lista_users');
+    }
+  );
   } else {
-    return [];
+    return Container();
   }
 
 

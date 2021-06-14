@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:vision_one/bloc/seccion_bloc.dart';
 import 'package:vision_one/modelo/seccion_model.dart';
 import 'package:vision_one/modelo/usuario_model.dart';
+import 'package:vision_one/search/search_delegate.dart';
 
 import 'package:vision_one/utils/utils.dart' as utils;
 
@@ -31,9 +32,14 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: utils.boton(usuario.rol, context),
         centerTitle: true,
         title: Text('Catalogo de secciones'),
-        actions: utils.boton(usuario.rol, context), 
+        actions: [
+          IconButton(icon: Icon(Icons.search), onPressed: (){
+            showSearch(context: context, delegate: DataProd());
+          }),
+        ]
       ),
       body: _body(tamano, usuario.rol),
       floatingActionButton: _agregarSecc(usuario.rol)

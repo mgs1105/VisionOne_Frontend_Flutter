@@ -26,14 +26,6 @@ class _ListaUserPageState extends State<ListaUserPage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text('Lista de usuarios'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.settings_power), 
-            color: Colors.white,
-            iconSize: 35.0,
-            onPressed: () {}
-          )
-        ],
       ),
       body: _body(),
       floatingActionButton: FloatingActionButton(

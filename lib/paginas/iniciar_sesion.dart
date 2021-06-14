@@ -47,14 +47,17 @@ class _IniciarSesionState extends State<IniciarSesion> {
   Widget _formulario(tamano, context) {
 
     final fuente = TextStyle(fontSize: 18.0);   
+    final salfa = 'https://media-exp3.licdn.com/dms/image/C4E0BAQH4Kk9pzs0THw/company-logo_200_200/0/1607610641711?e=2159024400&v=beta&t=D9kSMwNEEFKnhluhakch167u-LUIbUgkQW7GeKPxBs8';
 
     return Column(
       children: [
-        SizedBox(height: tamano.height * 0.07),
+        SizedBox(height: tamano.height * 0.03),
+        Container(child: FadeInImage(placeholder: AssetImage('imagenes/producto.jpg'), image: NetworkImage(salfa))),
+        SizedBox(height: tamano.height * 0.03),
         Text('Iniciar sesion', style: fuente),
         SizedBox(height: tamano.height * 0.1),
         Text('Ingrese sus datos para iniciar sesion', style: fuente),
-        SizedBox(height: tamano.height * 0.09),
+        SizedBox(height: tamano.height * 0.04),
         _rut(tamano),
         SizedBox(height: tamano.height * 0.01),
         _pass(tamano),

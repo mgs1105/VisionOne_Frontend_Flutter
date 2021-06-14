@@ -180,31 +180,3 @@ class _AdminUsuarioPageState extends State<AdminUsuarioPage> {
   }
 
 }
-
-  //Widget _password(Size tamano, UsuarioModel usuario) {
-
-  //  return Container(
-  //    width: tamano.width * 0.7,
-  //    child: TextFormField(
-  //      textCapitalization: TextCapitalization.sentences,
-  //      decoration: InputDecoration(
-  //        labelText: 'Password',
-  //      ),
-  //      validator: (value) {
-  //        if(value.length > 0 && value.length <= 5) {
-  //          return 'El Password debe contener minimo 6 caracteres';
-  //        } else {
-  //        return null;
-  //        }
-  //      },
-  //      onSaved: (value) {
-  //        if(value.length >= 1) { 
-  //        usuario.password = value;
-  //        } else {
-  //          usuario.password = usuario.password;
-  //        }
-  //      }
-  //    ),
-  //  );
-
-  //}
