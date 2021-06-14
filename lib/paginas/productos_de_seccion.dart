@@ -3,8 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:vision_one/bloc/producto_bloc.dart';
+import 'package:vision_one/bloc/seccion_bloc.dart';
 import 'package:vision_one/modelo/producto_model.dart';
 import 'package:vision_one/modelo/seccion_model.dart';
+import 'package:vision_one/provider/producto_provider.dart';
+import 'package:vision_one/provider/seccion_provider.dart';
+
+import 'package:vision_one/utils/utils.dart' as utils;
 
 class ProductosPage extends StatefulWidget {
   @override
@@ -15,19 +20,31 @@ class _ProductosPageState extends State<ProductosPage> {
 
   ProductoBloc productoBloc = new ProductoBloc();
   ProductoModel productoModel = new ProductoModel();
-  SeccionModel seccionModel = new SeccionModel();
+  ProductoProvider productoProvider = new ProductoProvider();
 
+  SeccionBloc seccionBloc = new SeccionBloc();
+  SeccionModel seccionModel = new SeccionModel();
+  SeccionProvider seccionProvider = new SeccionProvider();
 
   @override
   Widget build(BuildContext context) {
 
     final tamano = MediaQuery.of(context).size;
     final SeccionModel seccion = ModalRoute.of(context).settings.arguments;
+
     productoBloc.cargarProducto(seccion.id);
 
     return Scaffold(
       appBar: AppBar(
         title: Text('${seccion.nombre}'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.delete_forever), 
+            color: Colors.black87,
+            iconSize: 30.0,
+            onPressed: () => _eliminar(seccion)
+          )
+        ],
       ),
       body: _body(tamano, seccion),
       floatingActionButton: FloatingActionButton(
@@ -44,8 +61,12 @@ class _ProductosPageState extends State<ProductosPage> {
       builder: (BuildContext context, AsyncSnapshot<List<ProductoModel>> snapshot) {
 
         if(snapshot.hasData) {
-          
+
           final producto = snapshot.data;
+
+          if(producto.length == 0) {
+            return Center(child: Text('No se encontro informacion'));
+          }
 
           return RefreshIndicator(
             onRefresh: _refrescar,
@@ -56,9 +77,8 @@ class _ProductosPageState extends State<ProductosPage> {
             )
           );
           
-
-        } else {
-          return Center(child: CircularProgressIndicator());
+        }  {
+          return Center(child: Text('No se encontro informacion'));
         } 
 
       }
@@ -68,7 +88,7 @@ class _ProductosPageState extends State<ProductosPage> {
 
   Widget _producto(BuildContext context, ProductoModel producto, SeccionModel seccion) {
 
-      return Card(
+    return Card(
       child: Column(
         children: [
           ListTile(
@@ -107,4 +127,94 @@ class _ProductosPageState extends State<ProductosPage> {
     return Future.delayed(carga);
   }
 
+  void _eliminar(SeccionModel seccion) {
+
+    final color = TextStyle(color: Colors.white); 
+
+    showDialog(
+      context: context,
+      barrierDismissible: false, 
+      builder: (context) {
+
+        return StreamBuilder(
+          stream: productoBloc.productoStream,
+          builder: (BuildContext context, AsyncSnapshot<List<ProductoModel>> snapshot) {
+
+            if (snapshot.hasData) {
+              final producto = snapshot.data;
+
+              if(producto.length == 0) {
+                return _sielimina(color, seccion);
+              } else {
+                return _noelimina(color);
+              }
+
+            } else {
+              return Container();
+            }
+
+          }
+        );
+
+      }
+    );    
+
+  }
+
+  Widget _sielimina(TextStyle color, SeccionModel seccion) {
+
+    return AlertDialog(
+      title: Text('¿Esta seguro que desea eliminar esta seccion?'),
+      actions: [
+        TextButton(
+          style: TextButton.styleFrom(
+            backgroundColor: Colors.blueAccent
+          ),
+          child: Text('No', style: color),
+          onPressed: (){
+            Navigator.of(context).pop();
+          }, 
+        ),
+        Expanded(child: SizedBox(width: 10.0)),
+        TextButton(
+          style: TextButton.styleFrom(
+            backgroundColor: Colors.red
+          ), 
+          child: Text('Eliminar', style: color),
+          onPressed: () async {
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+                
+            seccionProvider.eliminarSeccion(seccion);
+            seccionBloc.cargarSeccion();
+
+            final snack = utils.snackBar('Seccion eliminada con exito');
+            ScaffoldMessenger.of(context).showSnackBar(snack);                 
+              
+          }, 
+        )
+      ],
+    );
+    
+
+  }
+
+  Widget _noelimina(TextStyle color) {
+
+    return AlertDialog(
+      title: Text('No puede eliminar esta seccion porque hay productos asociados a ella'),
+      actions: [
+        TextButton(
+          style: TextButton.styleFrom(
+            backgroundColor: Colors.blueAccent
+          ),
+          child: Text('volver', style: color),
+          onPressed: (){
+            Navigator.of(context).pop();
+          }, 
+        ),
+      ],
+    );
+  }
+  
 }

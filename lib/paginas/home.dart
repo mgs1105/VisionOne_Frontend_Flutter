@@ -27,6 +27,16 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text('Catalogo de secciones'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.group_add_outlined), 
+            color: Colors.black87,
+            iconSize: 35.0,
+            onPressed: () {
+              Navigator.pushNamed(context, 'lista_users');
+            }
+          )
+        ],        
       ),
       body: _body(tamano),
       floatingActionButton: FloatingActionButton(
@@ -87,8 +97,6 @@ class _HomePageState extends State<HomePage> {
     });
     return Future.delayed(carga);
   }
-
-
-              
+           
 
 }

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-
 import 'package:vision_one/bloc/producto_bloc.dart';
 import 'package:vision_one/modelo/producto_model.dart';
 import 'package:vision_one/provider/producto_provider.dart';
 
 import 'package:vision_one/modelo/seccion_model.dart';
+
+import 'package:vision_one/utils/utils.dart' as utils;
 
 class CrearProdPage extends StatefulWidget {
   @override
@@ -15,8 +16,7 @@ class CrearProdPage extends StatefulWidget {
 class _CrearProdPageState extends State<CrearProdPage> {
 
   final keyformulario = GlobalKey<FormState>();
-  final keyScaffold = GlobalKey<ScaffoldState>();
-
+  
   ProductoModel productoModel = new ProductoModel();
   ProductoProvider productoProvider = new ProductoProvider();
   ProductoBloc productoBloc = new ProductoBloc();
@@ -198,11 +198,8 @@ class _CrearProdPageState extends State<CrearProdPage> {
 
         productoProvider.crearProducto(productoModel);
         
-        final snack = SnackBar(
-          content: Text('Producto agregado con exito'),
-          duration: Duration(seconds: 2),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snack);
+            final snack = utils.snackBar('Producto creado con exito');
+            ScaffoldMessenger.of(context).showSnackBar(snack);
       }, 
     );
 

@@ -3,6 +3,8 @@ import 'package:vision_one/bloc/seccion_bloc.dart';
 import 'package:vision_one/modelo/seccion_model.dart';
 import 'package:vision_one/provider/seccion_provider.dart';
 
+import 'package:vision_one/utils/utils.dart' as utils;
+
 class AdminSeccionPage extends StatefulWidget {
   @override
   _AdminSeccionPageState createState() => _AdminSeccionPageState();
@@ -67,10 +69,7 @@ class _AdminSeccionPageState extends State<AdminSeccionPage> {
 
             seccionProvider.crearSeccion(seccionModel);
 
-            final snack = SnackBar(
-            content: Text('Seccion creada con exito'),
-            duration: Duration(seconds: 2),
-            );
+            final snack = utils.snackBar('Seccion creada con exito');
             ScaffoldMessenger.of(context).showSnackBar(snack);
             
             seccionBloc.cargarSeccion();

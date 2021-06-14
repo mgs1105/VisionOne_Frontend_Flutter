@@ -13,3 +13,11 @@ List<DropdownMenuItem<String>> opcionesRol(List roles) {
     return listarol;  
 
 }
+
+SnackBar snackBar (String mensaje) {
+  return SnackBar(
+  content: Text(mensaje),
+  duration: Duration(seconds: 2),
+);
+}
+
